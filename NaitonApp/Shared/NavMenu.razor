@@ -1,0 +1,80 @@
+﻿@using NaitonApp.Data;
+
+<div class="min-w-[75px] navigation-border pt-1" @onclick="ToggleNavMenu">
+    <div id="chevron" class="nav-drag mb-2.5 mx-auto rounded-full" />
+    
+    <nav class="pb-4 max-w-[332px] mx-auto">
+        
+        <div class="user-categories mb-2.5 flex items-center justify-between @(StaticData.GetUserCategories().Any() ? "" : "hidden")">
+            <button class="py-2 px-6 bg-[#F2F3F4] btn-special-border-left @(activeCategoryIndex == 0 ? "opacity-25" : "")"
+                    @onclick="() => PreviousCategory()">
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 24 24">
+                    <defs>
+                        <clipPath id="clip-path">
+                            <rect id="Rectangle_1653" data-name="Rectangle 1653" width="24" height="24" fill="#69717e" />
+                        </clipPath>
+                    </defs>
+                    <g id="Mask_Group_588" data-name="Mask Group 588" clip-path="url(#clip-path)">
+                        <path id="icons8-right_arrow" d="M7.372,6.537a.818.818,0,0,1,.57,1.405L3.884,12H24.273a.818.818,0,1,1,0,1.636H3.884l4.058,4.058a.818.818,0,1,1-1.157,1.157L1.33,13.4a.818.818,0,0,1,0-1.157L6.785,6.785A.818.818,0,0,1,7.372,6.537Z" transform="translate(-1.092 -0.814)" fill="#69717e" />
+                    </g>
+                </svg>
+            </button>
+
+            <p class="text-2xl">@StaticData.GetUserCategories()[activeCategoryIndex]</p>
+
+            <button class="py-2 px-6 bg-[#F2F3F4] btn-special-border-right @(@StaticData.GetUserCategories().Count - 1 == activeCategoryIndex ?  "opacity-25" : "" )"
+                    @onclick="() => NextCategory()">
+                <svg class="rotate-180" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 24 24">
+                    <defs>
+                        <clipPath id="clip-path">
+                            <rect id="Rectangle_1653" data-name="Rectangle 1653" width="24" height="24" fill="#69717e" />
+                        </clipPath>
+                    </defs>
+                    <g id="Mask_Group_588" data-name="Mask Group 588" clip-path="url(#clip-path)">
+                        <path id="icons8-right_arrow" d="M7.372,6.537a.818.818,0,0,1,.57,1.405L3.884,12H24.273a.818.818,0,1,1,0,1.636H3.884l4.058,4.058a.818.818,0,1,1-1.157,1.157L1.33,13.4a.818.818,0,0,1,0-1.157L6.785,6.785A.818.818,0,0,1,7.372,6.537Z" transform="translate(-1.092 -0.814)" fill="#69717e" />
+                    </g>
+                </svg>
+            </button>
+        </div>
+        
+        <div class="grid grid-cols-4">
+            @foreach (var tab in StaticData.GetUserNavigationTabs())
+            {
+                <div class="text-center w-[80px] h-[66px] bg-[#F2F3F4] rounded rounded-2 mb-1">
+                    <NavLink class=" text-sm mx-auto mb-2 text-[#848A93]" href="" Match="NavLinkMatch.All">
+                        <img src="@tab.IconPath" width="24" height="24" class="mb-2 mt-3 mx-auto" /> 
+                        @tab.Name
+                    </NavLink>
+                </div>
+            }
+        </div>
+
+    </nav>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private int activeCategoryIndex;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    private void PreviousCategory()
+    {
+        if (activeCategoryIndex != 0)
+            activeCategoryIndex--;
+    }
+    
+    private void NextCategory()
+    {
+        if (activeCategoryIndex < StaticData.GetUserCategories().Count - 1)
+            activeCategoryIndex++;
+    }
+
+    
+}
