@@ -1,12 +1,18 @@
 ﻿@using NaitonApp.Data;
+@inject  IJSRuntime JS
 
-<div class="min-w-[75px] navigation-border pt-1" @onclick="ToggleNavMenu">
-    <div id="chevron" class="nav-drag mb-2.5 mx-auto rounded-full" />
+<div class="min-h-[75px] max-h-[@(NavigationMaxWidth)px] navigation-border pt-1" id="nav-bar" @onclick="ToggleNavMenu">
+    <div @onmousedown="(e) => OnDragStarted(e)" @ontouchstart="(e) => OnDragStarted(e)"
+         @onmousemove="(e) => OnDragging(e)" @ontouchmove="(e) => OnDragging(e)"
+         @onmouseup="() => OnDragEnd()" @ontouchend="() => OnDragEnd()">
+        <div id="chevron" class="nav-drag mb-2.5 mx-auto rounded-full" />
+    </div>
     
     <nav class="pb-4 max-w-[332px] mx-auto">
-        
-        <div class="user-categories mb-2.5 flex items-center justify-between @(StaticData.GetUserCategories().Any() ? "" : "hidden")">
-            <button class="py-2 px-6 bg-[#F2F3F4] btn-special-border-left @(activeCategoryIndex == 0 ? "opacity-25" : "")"
+        @if (@StaticData.GetUserCategories().Any())
+        {
+            <div class="user-categories mb-2.5 flex items-center justify-between @(StaticData.GetUserCategories().Any() ? "" : "hidden")">
+                <button class="py-2 px-6 bg-[#F2F3F4] btn-special-border-left @(activeCategoryIndex == 0 ? "opacity-25" : "")"
                     @onclick="() => PreviousCategory()">
                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 24 24">
                     <defs>
@@ -36,7 +42,8 @@
                 </svg>
             </button>
         </div>
-        
+        }
+
         <div class="grid grid-cols-4">
             @foreach (var tab in StaticData.GetUserNavigationTabs())
             {
@@ -59,6 +66,10 @@
 
     private int activeCategoryIndex;
 
+    private IJSObjectReference jsModule;
+
+    private int NavigationMaxWidth = GetNavigationMaxWidth();
+
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
@@ -69,11 +80,39 @@
         if (activeCategoryIndex != 0)
             activeCategoryIndex--;
     }
-    
+
     private void NextCategory()
     {
         if (activeCategoryIndex < StaticData.GetUserCategories().Count - 1)
             activeCategoryIndex++;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        jsModule = await JS.InvokeAsync<IJSObjectReference>("import", new object[1] { "./scripts/drag.js" });
+    }
+
+    private async Task OnDragStarted(EventArgs args)
+    {
+        await jsModule.InvokeVoidAsync("dragStart", args);
+    }
+    
+    private async Task OnDragging(EventArgs args)
+    {
+        await jsModule.InvokeVoidAsync("dragging", args);
+    }
+
+    private async Task OnDragEnd()
+    {
+        await jsModule.InvokeVoidAsync("dragStop");
+    }
+
+    private static int GetNavigationMaxWidth()
+    {
+        int dragzoneWithCategories = StaticData.GetUserCategories().Any() ? 68 : 20; // 68 px if category have got else 20
+        int navigationRows = StaticData.GetUserNavigationTabs().Count / 4; 
+
+        return dragzoneWithCategories + (navigationRows * 66) + ((navigationRows - 1) * 4) + 16;
     }
 
     
