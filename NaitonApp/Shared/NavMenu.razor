@@ -1,64 +1,70 @@
 ﻿@using NaitonApp.Data;
 @inject  IJSRuntime JS
+@if (@StaticData.GetUserNavigationTabs().Any())
+{
+    <div class="min-h-[75px] max-h-[@(NavigationMaxWidth)px] navigation-border pt-1 select-none relative" id="nav-bar" @onclick="ToggleNavMenu">
 
-<div class="min-h-[75px] max-h-[@(NavigationMaxWidth)px] navigation-border pt-1" id="nav-bar" @onclick="ToggleNavMenu">
-    <div @onmousedown="(e) => OnDragStarted(e)" @ontouchstart="(e) => OnDragStarted(e)"
+        <!-- drag and move zone to min and max height -->
+        <div @onmousedown="(e) => OnDragStarted(e)" @ontouchstart="(e) => OnDragStarted(e)"
          @onmousemove="(e) => OnDragging(e)" @ontouchmove="(e) => OnDragging(e)"
          @onmouseup="() => OnDragEnd()" @ontouchend="() => OnDragEnd()">
-        <div id="chevron" class="nav-drag mb-2.5 mx-auto rounded-full" />
-    </div>
-    
-    <nav class="pb-4 max-w-[332px] mx-auto">
-        @if (@StaticData.GetUserCategories().Any())
-        {
-            <div class="user-categories mb-2.5 flex items-center justify-between @(StaticData.GetUserCategories().Any() ? "" : "hidden")">
-                <button class="py-2 px-6 bg-[#F2F3F4] btn-special-border-left @(activeCategoryIndex == 0 ? "opacity-25" : "")"
-                    @onclick="() => PreviousCategory()">
-                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 24 24">
-                    <defs>
-                        <clipPath id="clip-path">
-                            <rect id="Rectangle_1653" data-name="Rectangle 1653" width="24" height="24" fill="#69717e" />
-                        </clipPath>
-                    </defs>
-                    <g id="Mask_Group_588" data-name="Mask Group 588" clip-path="url(#clip-path)">
-                        <path id="icons8-right_arrow" d="M7.372,6.537a.818.818,0,0,1,.57,1.405L3.884,12H24.273a.818.818,0,1,1,0,1.636H3.884l4.058,4.058a.818.818,0,1,1-1.157,1.157L1.33,13.4a.818.818,0,0,1,0-1.157L6.785,6.785A.818.818,0,0,1,7.372,6.537Z" transform="translate(-1.092 -0.814)" fill="#69717e" />
-                    </g>
-                </svg>
-            </button>
-
-            <p class="text-2xl">@StaticData.GetUserCategories()[activeCategoryIndex]</p>
-
-            <button class="py-2 px-6 bg-[#F2F3F4] btn-special-border-right @(@StaticData.GetUserCategories().Count - 1 == activeCategoryIndex ?  "opacity-25" : "" )"
-                    @onclick="() => NextCategory()">
-                <svg class="rotate-180" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 24 24">
-                    <defs>
-                        <clipPath id="clip-path">
-                            <rect id="Rectangle_1653" data-name="Rectangle 1653" width="24" height="24" fill="#69717e" />
-                        </clipPath>
-                    </defs>
-                    <g id="Mask_Group_588" data-name="Mask Group 588" clip-path="url(#clip-path)">
-                        <path id="icons8-right_arrow" d="M7.372,6.537a.818.818,0,0,1,.57,1.405L3.884,12H24.273a.818.818,0,1,1,0,1.636H3.884l4.058,4.058a.818.818,0,1,1-1.157,1.157L1.33,13.4a.818.818,0,0,1,0-1.157L6.785,6.785A.818.818,0,0,1,7.372,6.537Z" transform="translate(-1.092 -0.814)" fill="#69717e" />
-                    </g>
-                </svg>
-            </button>
+            <div id="chevron" class="nav-drag mb-2.5 mx-auto rounded-full" />
         </div>
-        }
 
-        <div class="grid grid-cols-4">
-            @foreach (var tab in StaticData.GetUserNavigationTabs())
+        <nav class="pb-4 max-w-[332px] mx-auto">
+
+            @if (@StaticData.GetUserCategories().Count > 1)
             {
-                <div class="text-center w-[80px] h-[66px] bg-[#F2F3F4] rounded rounded-2 mb-1">
-                    <NavLink class=" text-sm mx-auto mb-2 text-[#848A93]" href="" Match="NavLinkMatch.All">
-                        <img src="@tab.IconPath" width="24" height="24" class="mb-2 mt-3 mx-auto" /> 
-                        @tab.Name
-                    </NavLink>
+                <!-- user categories zone -->
+                <div class="user-categories mb-2.5 flex items-center justify-between hidden"
+                     hidden="@(!StaticData.GetUserCategories().Any())" id="user-categories">
+                    <button class="py-2 px-6 bg-[#F2F3F4] btn-special-border-left @(activeCategoryIndex == 0 ? "opacity-25" : "")"
+                    @onclick="() => PreviousCategory()">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 24 24">
+                            <defs>
+                                <clipPath id="clip-path">
+                                    <rect id="Rectangle_1653" data-name="Rectangle 1653" width="24" height="24" fill="#69717e" />
+                                </clipPath>
+                            </defs>
+                            <g id="Mask_Group_588" data-name="Mask Group 588" clip-path="url(#clip-path)">
+                                <path id="icons8-right_arrow" d="M7.372,6.537a.818.818,0,0,1,.57,1.405L3.884,12H24.273a.818.818,0,1,1,0,1.636H3.884l4.058,4.058a.818.818,0,1,1-1.157,1.157L1.33,13.4a.818.818,0,0,1,0-1.157L6.785,6.785A.818.818,0,0,1,7.372,6.537Z" transform="translate(-1.092 -0.814)" fill="#69717e" />
+                            </g>
+                        </svg>
+                    </button>
+
+                    <p class="text-2xl">@StaticData.GetUserCategories()[activeCategoryIndex]</p>
+
+                    <button class="py-2 px-6 bg-[#F2F3F4] btn-special-border-right @(@StaticData.GetUserCategories().Count - 1 == activeCategoryIndex ?  "opacity-25" : "" )"
+                    @onclick="() => NextCategory()">
+                        <svg class="rotate-180" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 24 24">
+                            <defs>
+                                <clipPath id="clip-path">
+                                    <rect id="Rectangle_1653" data-name="Rectangle 1653" width="24" height="24" fill="#69717e" />
+                                </clipPath>
+                            </defs>
+                            <g id="Mask_Group_588" data-name="Mask Group 588" clip-path="url(#clip-path)">
+                                <path id="icons8-right_arrow" d="M7.372,6.537a.818.818,0,0,1,.57,1.405L3.884,12H24.273a.818.818,0,1,1,0,1.636H3.884l4.058,4.058a.818.818,0,1,1-1.157,1.157L1.33,13.4a.818.818,0,0,1,0-1.157L6.785,6.785A.818.818,0,0,1,7.372,6.537Z" transform="translate(-1.092 -0.814)" fill="#69717e" />
+                            </g>
+                        </svg>
+                    </button>
                 </div>
             }
-        </div>
 
-    </nav>
-</div>
-
+            <!-- user features pages navigation tabs -->
+            <div class="grid grid-cols-4" id="user-nav-tabs">
+                @foreach (var tab in StaticData.GetUserNavigationTabs())
+                {
+                    <div class="text-center w-[80px] h-[66px] bg-[#F2F3F4] rounded rounded-2 mb-1">
+                        <NavLink class="text-sm mx-auto mb-2 text-[#848A93]" href="" Match="NavLinkMatch.All">
+                            <img src="@tab.IconPath" width="24" height="24" class="mb-2 mt-3 mx-auto" /> 
+                            @tab.Name
+                        </NavLink>
+                    </div>
+                }
+            </div>
+        </nav>
+    </div>
+}
 @code {
     private bool collapseNavMenu = true;
 
@@ -90,11 +96,16 @@
     protected override async Task OnInitializedAsync()
     {
         jsModule = await JS.InvokeAsync<IJSObjectReference>("import", new object[1] { "./scripts/drag.js" });
+        await jsModule.InvokeVoidAsync("setUserNavigationsAsMin");
     }
 
     private async Task OnDragStarted(EventArgs args)
     {
-        await jsModule.InvokeVoidAsync("dragStart", args);
+        await jsModule.InvokeVoidAsync("dragStart", new object[] 
+        {
+            args, 
+            GetNavigationMaxWidth() 
+        } );
     }
     
     private async Task OnDragging(EventArgs args)
@@ -109,7 +120,7 @@
 
     private static int GetNavigationMaxWidth()
     {
-        int dragzoneWithCategories = StaticData.GetUserCategories().Any() ? 68 : 20; // 68 px if category have got else 20
+        int dragzoneWithCategories = StaticData.GetUserCategories().Count > 1 ? 68 : 20; // 68 px if category have got else 20
         int navigationRows = StaticData.GetUserNavigationTabs().Count / 4; 
 
         return dragzoneWithCategories + (navigationRows * 66) + ((navigationRows - 1) * 4) + 16;
