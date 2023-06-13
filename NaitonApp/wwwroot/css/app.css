@@ -1,11 +1,23 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
-.nav-drag {
+.nav-drag-line {
     top: 572px;
     left: 162px;
     width: 36px;
     height: 4px;
     /* UI Properties */
+    background: #E7E7E8 0% 0% no-repeat padding-box;
+    opacity: 1;
+}
+
+.nav-drag-arrow {
+    /* Layout Properties */
+    top: 354px;
+    left: 162px;
+    width: 36px;
+    height: 8px;
+    /* UI Properties */
+    background: #E7E7E8 0% 0% no-repeat padding-box;
     background: #E7E7E8 0% 0% no-repeat padding-box;
     opacity: 1;
 }

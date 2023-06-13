@@ -1,7 +1,24 @@
 ﻿@page "/"
+@using NaitonApp.Data;
 
-<h1>Hello, world!</h1>
+<h1 class="text-center mb-4">Navigation configutaion for checking</h1>
+<div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Count of the user cateries:</label>
+    <input type="number" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" @bind-value=@StaticData.UsedCategoriesCount>
+</div>
+<div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Navigation tabs count: </label>
+    <input type="number" class="form-control" id="exampleInputPassword1" @bind-value=@StaticData.UsedTabsCount >
+</div>
+<div class="d-grid">
+    <button @onclick="OnInputChange" class="btn btn-outline-primary">Change</button>
+</div>
 
-Welcome to your new app.
+@code {
+    private void OnInputChange()
+    {
+        OnCountsChanged.Invoke(null, EventArgs.Empty);
+    }
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+    public static event EventHandler OnCountsChanged;
+}

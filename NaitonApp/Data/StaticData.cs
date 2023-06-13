@@ -17,7 +17,7 @@ public static class StaticData
         new ("Maintenance", "icons/Maintenance.svg"),
         new ("Settings", "icons/Settings.svg")
     };
-    
+
     public static List<NavigationTab> GetUserNavigationTabs()
     {
         return navigations;
@@ -27,9 +27,12 @@ public static class StaticData
     {
         return new List<string>()
         {
-            "WMS", "Driver", "Admin"
+           "WMS", "Drivers", "Customers", "DKA"
         };
     }
+
+    public static int? UsedCategoriesCount { get; set; }
+    public static int? UsedTabsCount { get; set; }
 }
 
 public class NavigationTab
